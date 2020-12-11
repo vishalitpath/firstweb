@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeProvider } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
+import "bootstrap/dist/css/bootstrap.css";
 
 import './index.css';
 import App from './App';
@@ -8,11 +9,10 @@ import reportWebVitals from './reportWebVitals';
 import routes from "./routes/routes";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>,
+  <ChakraProvider>
+    <App />
+  </ChakraProvider>
+  ,
   document.getElementById('root')
 );
 

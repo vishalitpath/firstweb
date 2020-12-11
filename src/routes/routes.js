@@ -3,23 +3,25 @@ import {
     Switch, Route, BrowserRouter
 } from 'react-router-dom';
 
-import Dashboard from '../pages/dashboard';
-import Homepage from '../pages/home';
-import Aboutus from '../pages/about';
-import Clock from "../pages/clock";
-import DisplayDetails from "../pages/apiCall";
-import SideMenu from "../shared/layout/sidemenu/sidemenu";
-import Content from "../shared/layout/content";
+import AboutUs from '../pages/about';
+import Async from "react-code-splitting";
+
+const Homepage = () => <Async load={import("../pages/home")} />;
+const Dashboard = () => <Async load={import("../pages/dashboard")} />;
+const DisplayDetails = () => <Async load={import("../pages/displayDataFromApi")} />;
+const Clock = () => <Async load={import("../pages/clock")} />;
+const LoginPage = () => <Async load={import("../pages/loginControl/login")} />;
 
 const Routes = () => {
     return (
         <BrowserRouter>
             <Switch>
                 <Route exact path="/" component={Homepage} />
-                <Route exact path="/about" component={Aboutus} />
+                <Route exact path="/about" component={AboutUs} />
                 <Route path="/dashboard" component={Dashboard} />
                 <Route path="/clock" component={Clock} />
-                <Route path="/displaydetails" component={DisplayDetails} />
+                <Route path="/displayDetails" component={DisplayDetails} />
+                <Route path="/login" component={LoginPage} />
             </Switch>
         </BrowserRouter>
     )

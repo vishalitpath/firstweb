@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner, useToast, Box, Input } from "@chakra-ui/core";
+import { Spinner, useToast, Box, Input, Button } from "@chakra-ui/react";
 
 import { user, LIST } from '../../components/dataObject';
 import SideMenu from "../../shared/layout/sidemenu/sidemenu";
 import Table from "../../components/CommonTable";
+import ApiService from "../../services/api-service";
+import TransitionExample from "../../components/chakraAlertDialog";
+import TransferList from "../../components/transferListMaterial";
+import "./style.css";
 
 function DisplayDetails() {
     const [loading, setLoading] = useState(false);
-    const [apiInforamation, setApiInformation] = useState([]);
+    const [apiInformation, setApiInformation] = useState([]);
     const [titleInput, setTitleInput] = useState("");
+    const [tableTitle, setTableTitle] = useState("");
+    const [tableContent, setTableContent] = useState("");
+    const [tableDetails, setTableDetails] = useState([{ title: 'npm', content: 'install' }]);
     const toast = useToast();
 
     useEffect(() => {
-        randomUserName();
+        // randomUserName();
     }, []);
 
-     function randomUserName() {
-        debugger
+    function randomUserName() {
         setLoading(true)
-        fetch('https://randomuser.me/api/?results=1')
-            .then(response => response.json())
-            .then(responseJson => {
-                debugger
-                setApiInformation(responseJson.results['0']);
+        ApiService.randomUserName()
+            .then(response => {
+                setApiInformation(response.data.results['0']);
                 setLoading(false);
             })
-            .catch(() => {
-                setLoading(false);
+            .catch((err) => {
                 toast({
                     title: "An error occurred.",
                     description: "Unable to load details.",
@@ -43,14 +46,14 @@ function DisplayDetails() {
     const getNames = () => {
         var temp;
         var arr = []
-        for (var item in apiInforamation.name) {
-            arr.push(<span >{apiInforamation.name['' + item]}, </span>)
+        for (var item in apiInformation.name) {
+            arr.push(<span >{apiInformation.name['' + item]}, </span>)
         }
         return arr
     }
 
     const submitTitle = () => {
-        if (titleInput == "" || titleInput == undefined) {
+        if (titleInput === "" || titleInput === undefined) {
             toast({
                 title: `Empty title is not allow!`,
                 status: "error",
@@ -59,16 +62,10 @@ function DisplayDetails() {
             })
         }
         else {
-            fetch('https://jsonplaceholder.typicode.com/posts',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title: titleInput })
-                })
-                .then(response => response.json())
-                .then(responseJson => {
+            ApiService.submitTitle(titleInput)
+                .then(response => {
                     toast({
-                        title: ` title ${responseJson.title} added.`,
+                        title: ` title ${response.data.title} added.`,
                         description: "We've added this title for you.",
                         status: "success",
                         duration: 1500,
@@ -91,6 +88,9 @@ function DisplayDetails() {
     const handleChange = (e) => {
         setTitleInput(e.target.value);
     }
+    const onAddTableData = () => {
+        setTableDetails([...tableDetails,{ title: tableTitle, content: tableContent }]);
+    }
     const loader = () => {
         return loading ? <Spinner
             thickness="4px"
@@ -100,22 +100,37 @@ function DisplayDetails() {
             size="lg"
         /> : null;
     };
-
     return (
         <SideMenu content={
             <div style={{ justifyContent: 'space-between' }}>
-                {getNames()}
+                {/* Names from the Api : {getNames()} */}
                 {loader()}
-                <div style={{ display: "flex", justifyContent: 'space-around', alignItems: 'center', flexDirection: 'row' }}>
+                <div style={{ display: "flex", justifyContent: 'space-around', alignItems: 'center', flexDirection: 'row', padding: 11 }}>
                     <Input width="50%" value={titleInput} placeholder="title" size="md" onChange={handleChange} />
-                    <button style={{ width: 50, height: 30 }} onClick={submitTitle} >submit</button>
+                    <Button colorScheme="teal" onClick={submitTitle}>submit</Button>
                 </div>
                 <div>
-                    <>
-                        hello, {formatName(user)}!
-                    </>
+                    hello, {formatName(user)}!
                 </div>
-                <Table tableDetails={LIST} />
+                <div class="table-div">
+                    <text>Custom table for dynamic details</text>
+                    <Table tableDetails={tableDetails} />
+                </div>
+                <div style={{ marginTop: 20 }}>
+                    <TransitionExample />
+                </div>
+                <div style={{ marginTop: 20 }}>
+                    <p>Material Transfer-List</p>
+                    <TransferList />
+                </div>
+                <div>
+                    <p>title</p>
+                    <input style={{ borderColor: 'black', borderWidth: 2 }} type="text" value={tableTitle} onChange={(e) => { setTableTitle(e.target.value) }} />
+                    <p>{tableTitle}</p>
+                    <p>content</p>
+                    <input type="text" style={{ borderColor: 'black', borderWidth: 2 }} value={tableContent} onChange={(e) => { setTableContent(e.target.value) }} />
+                    <button onClick={onAddTableData}>submit</button>
+                </div>
             </div>}
         />
     )
