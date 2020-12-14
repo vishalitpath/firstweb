@@ -64,6 +64,7 @@ export default function TransitionExample() {
                 </RadioGroup>
             </div>
             <div>
+                <p> Progress bar from chakra-ui</p>
                 <Progress value={80} />
             </div>
             <div style={{display:'flex',alignItems:'center',flexDirection:'column'}}>

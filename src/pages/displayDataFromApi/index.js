@@ -20,6 +20,7 @@ function DisplayDetails() {
 
     useEffect(() => {
         // randomUserName();
+        console.log("setLocalTableDetails", setLocalTableDetails);
     }, []);
 
     function randomUserName() {
@@ -89,8 +90,17 @@ function DisplayDetails() {
         setTitleInput(e.target.value);
     }
     const onAddTableData = () => {
-        setTableDetails([...tableDetails,{ title: tableTitle, content: tableContent }]);
+        if (tableTitle === "" || tableTitle === undefined || tableContent === "") {
+            window.alert("Please fill title and content");
+        }
+        else {
+            var setLocalTable = [...tableDetails, { title: tableTitle, content: tableContent }];
+            // console.log("setlocalTable",setLocalTable);
+            setTableDetails([...tableDetails, { title: tableTitle, content: tableContent }]);
+            localStorage.setItem("localTableDetails", JSON.stringify(setLocalTable));
+        }
     }
+    const setLocalTableDetails = JSON.parse(localStorage.getItem("localTableDetails"));
     const loader = () => {
         return loading ? <Spinner
             thickness="4px"
@@ -106,6 +116,7 @@ function DisplayDetails() {
                 {/* Names from the Api : {getNames()} */}
                 {loader()}
                 <div style={{ display: "flex", justifyContent: 'space-around', alignItems: 'center', flexDirection: 'row', padding: 11 }}>
+                    <p>You can post title...</p>
                     <Input width="50%" value={titleInput} placeholder="title" size="md" onChange={handleChange} />
                     <Button colorScheme="teal" onClick={submitTitle}>submit</Button>
                 </div>
@@ -114,7 +125,7 @@ function DisplayDetails() {
                 </div>
                 <div class="table-div">
                     <text>Custom table for dynamic details</text>
-                    <Table tableDetails={tableDetails} />
+                    <Table tableDetails={setLocalTableDetails} />
                 </div>
                 <div style={{ marginTop: 20 }}>
                     <TransitionExample />
@@ -124,6 +135,7 @@ function DisplayDetails() {
                     <TransferList />
                 </div>
                 <div>
+                    <p>You can add data in the table</p>
                     <p>title</p>
                     <input style={{ borderColor: 'black', borderWidth: 2 }} type="text" value={tableTitle} onChange={(e) => { setTableTitle(e.target.value) }} />
                     <p>{tableTitle}</p>
