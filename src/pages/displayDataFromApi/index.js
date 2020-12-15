@@ -95,7 +95,6 @@ function DisplayDetails() {
         }
         else {
             var setLocalTable = [...tableDetails, { title: tableTitle, content: tableContent }];
-            // console.log("setlocalTable",setLocalTable);
             setTableDetails([...tableDetails, { title: tableTitle, content: tableContent }]);
             localStorage.setItem("localTableDetails", JSON.stringify(setLocalTable));
         }

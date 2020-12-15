@@ -17,6 +17,7 @@ function FileUpload() {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     function handleUpload(event) {
+        var url = URL.createObjectURL(file);
         setFile(event.target.files[0]);
     }
 
@@ -31,7 +32,7 @@ function FileUpload() {
 
     return (
         <Box display="flex" flexDirection="column">
-            <input type="file" onChange={handleUpload} />
+            <input type="file" id="i_file" onChange={handleUpload} />
             <Stack spacing={3}>
                 <Text fontSize="lg">File Name: {file.name}</Text>
                 <Text fontSize="lg">File type: {file.type}</Text>
